@@ -55,7 +55,6 @@ export default function FeedPost({ post }: { post: Post }) {
       </div>
       <div className="flex gap-2 dark:text-neutral-400 text-neutral-600">
         {/* <p>{post.likes} likes</p> */}
-        <p>·</p>
         {/* <p>{post.replies} replies</p> */}
         {/* <p>{post.retweets} retweets</p> */}
       </div>

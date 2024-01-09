@@ -1,9 +1,31 @@
 import Image from "next/image"
 import { type User } from "@/db/schema/users"
+import { db } from "@/db"
+import { posts } from "@/db/schema/posts"
+import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
+import SubmitButton from "@/app/create-post/submit-button"
 
 export default function CreatePostForm({ user }: { user: User }) {
+  async function handleCreatePost(data: FormData) {
+    "use server"
+    const content = data.get("content") as string
+
+    const result = await db
+      .insert(posts)
+      .values({
+        content,
+        userId: "1",
+      })
+      .returning()
+
+    console.log(result)
+    revalidatePath("/")
+    redirect("/")
+  }
+
   return (
-    <form className="border border-neutral-500 rounded-lg px-6 py-4">
+    <form className="border border-neutral-500 rounded-lg px-6 py-4" action={handleCreatePost}>
       <div className="flex gap-4 items-start pb-4">
         <div className="rounded-full h-12 w-12 overflow-hidden relative">
           <Image
@@ -54,9 +76,7 @@ export default function CreatePostForm({ user }: { user: User }) {
 
       <div className="flex justify-between items-center mt-5">
         <div className="text-neutral-500">Anyone can reply</div>
-        <button type="submit" className="border rounded-xl px-4 py-2">
-          Post
-        </button>
+        <SubmitButton />
       </div>
     </form>
   )
